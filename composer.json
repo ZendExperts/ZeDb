@@ -1,5 +1,5 @@
 {
-    "name": "ZendExperts/ZeDb",
+    "name": "zendexperts/ze-db",
     "type": "library",
     "description": "A ZF2 module that allows developers to focus on the entities they work with, instead of how to retrieve or store data in the database.",
     "keywords": ["module", "zf2","database", "orm"],
