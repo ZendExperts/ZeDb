@@ -55,20 +55,24 @@ The Model class defined the following functions:
 - `get($id)`: returns an Entity class based on the id of the record
 
 Apart from the above function the model also defines a set of magic functions that can handle combination of 
-table columns, order by or limit:
+table columns, order by or limit.
 
 The pattern used by these methods is as follows:
-1. Function name prefix, which can me one of the following: 
-    - `removeBy`: removes one or more records from the table
-    - `getAll`: returns all the records from the table
-    - `getBy`: returns a single Entity class based on the values in the specified fields
-    - `getAllBy`: same as `getBy` only it returns more that one record, if found
-    - `getLike`: returns a single Entity class based on the values in the specified fields using `LIKE` instead of `=`
-    - `getAllLike`: same as `getLike` only it returns more that one record, if found
-    - `getByColumns`: allows you to specify an array of keys and values that can be passed over to the where method of the Select instance before returning a single entity.
-    - `getAllByColumns`: same as `getByColumns` only it returns more that one record
+
+1. Function name prefix, which can be one of the following: 
+- `removeBy`: removes one or more records from the table
+- `getAll`: returns all the records from the table
+- `getBy`: returns a single Entity class based on the values in the specified fields
+- `getAllBy`: same as `getBy` only it returns more that one record, if found
+- `getLike`: returns a single Entity class based on the values in the specified fields using `LIKE` instead of `=`
+- `getAllLike`: same as `getLike` only it returns more that one record, if found
+- `getByColumns`: allows you to specify an array of keys and values that can be passed over to the where method of the Select instance before returning a single entity.
+- `getAllByColumns`: same as `getByColumns` only it returns more that one record
+
 2. A list of field names in camelCase separated by the `And` word. Ex: `$model->getByUsernameAndStatus('paul', 'active');`. This is only needed for the following functions: removeBy, getBy, getAllBy, getLike, getAllLike.
+
 3. The `OrderBy` text followed by a list of field names in camelCase separated by the `And` word where each field name can be suffixed by either `Asc` or `Desc`. This section is optional for all functions.
+
 4. The `Limit` text followed by a number representing the maximum number of records that should be returned. If limit is defined then you may also specify an offest from which to start by adding the text `From` followed by the offset number.
     
 The Entity class defined two methods that can help you work with the database faster:
