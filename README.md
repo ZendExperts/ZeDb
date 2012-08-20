@@ -10,7 +10,7 @@ Installation
 The module can be installed using Composer by adding the following lines to your composer.json file:
 
     "require": {
-        "ZendExperts/ZeDb": "1.0.*"
+        "zendexperts/ze-db": "dev-master"
     }
     
 In order to use the module you need to add it in the list of modules from `config/application.config.php`
@@ -24,9 +24,9 @@ and set the list of entities and models you have along with the database setting
             'password'  => ''
         ),
         'models' => array(
-            'Application\Db\Model\User' => array(
+            'Application\Model\User' => array(
                 'tableName' => 'users',
-                'entityClass' => 'Application\Db\Entity\User',
+                'entityClass' => 'Application\Entity\User',
             ),
         ),
     )
@@ -84,4 +84,12 @@ Currently the fields for each Entity instance are kept in a data array for fast 
 Examples
 --------
 
-Comming soon...
+1. Get a user entity by id in a controller action:
+
+    public function indexAction()
+    {
+        $manager = $this->getServiceLocator()->get('ZeDbManager');
+        $model = $manager->get('Application\Entity\User');
+        $user = $model->getById(1);
+        return array();
+    }
