@@ -31,7 +31,7 @@ class TableGateway extends Gateway
         '/^getLike(?P<fields>[A-Z][a-zA-Z0-9]+)(?:OrderBy(?P<orderBy>[A-Z][a-zA-Z0-9]+))?(?:Limit(?P<limit>[0-9]+)(?:From(?P<offset>[0-9]+))?)?$/U' => '__getLike',
         '/^getAllLike(?P<fields>[A-Z][a-zA-Z0-9]+)(?:OrderBy(?P<orderBy>[A-Z][a-zA-Z0-9]+))?(?:Limit(?P<limit>[0-9]+)(?:From(?P<offset>[0-9]+))?)?$/U' => '__getAllLike',
 
-        '/^removeBy(?P<fields>[A-Z][a-zA-Z0-9]+)(?:OrderBy(?P<orderBy>[A-Z][a-zA-Z0-9]+))?(?:Limit(?P<limit>[0-9]+)(?:From(?P<offset>[0-9]+))?)?$/U' => '__removeBy',
+        '/^removeBy(?P<fields>[A-Z][a-zA-Z0-9]+)$/U' => '__removeBy',
     );
 
     /**
@@ -69,21 +69,10 @@ class TableGateway extends Gateway
     {
         //get arguments from the function name
         $where = $this->_parseWhere($matches, $args);
-        $order = $this->_parseOrder($matches);
-        $limit = $this->_parseLimit($matches);
-        $offset = null;
-        if (is_array($limit)){
-            list($limit, $offset) = $limit;
-        }
         //execute the delete procedure with the abobe arguments
-        $result = $this->delete(function ($select) use ($where, $order, $limit, $offset)
+        $result = $this->delete(function ($select) use ($where)
         {
             $select->where($where);
-            if ($order) {
-                $select->order($order);
-            }
-            $select->limit(($limit === null ? null : 1 * $limit));
-            $select->offset(($offset === null ? null : 1 * $offset));
         });
         //return the result
         return $result;
