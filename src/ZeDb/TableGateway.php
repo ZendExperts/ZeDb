@@ -210,11 +210,9 @@ class TableGateway extends Gateway
     private function _parseWhere($matches, $args){
         $where = array();
         if (array_key_exists('fields', $matches) && !empty($matches['fields'])) {
+            $k = 0;
             $fields = explode('And', $matches['fields']);
             $fields = $this->__normalizeKeys($fields);
-            foreach($fields as &$field){
-                $field = "$field = ?";
-            }
             $where = array_combine($fields, $args);
         }else{
             if (count($args)){
