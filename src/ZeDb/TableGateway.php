@@ -10,6 +10,7 @@
 namespace ZeDb;
 
 use Zend\Db\TableGateway\TableGateway as Gateway;
+use Zend\Db\Sql\Expression;
 
 /**
  * Table Gateway class for requests to the database using simplified functions calls
@@ -30,7 +31,9 @@ class TableGateway extends Gateway
         '/^getAllBy(?P<fields>[A-Z][a-zA-Z0-9]+)(?:OrderBy(?P<orderBy>[A-Z][a-zA-Z0-9]+))?(?:Limit(?P<limit>[0-9]+)(?:From(?P<offset>[0-9]+))?)?$/U' => '__getAll',
         '/^getLike(?P<fields>[A-Z][a-zA-Z0-9]+)(?:OrderBy(?P<orderBy>[A-Z][a-zA-Z0-9]+))?(?:Limit(?P<limit>[0-9]+)(?:From(?P<offset>[0-9]+))?)?$/U' => '__getLike',
         '/^getAllLike(?P<fields>[A-Z][a-zA-Z0-9]+)(?:OrderBy(?P<orderBy>[A-Z][a-zA-Z0-9]+))?(?:Limit(?P<limit>[0-9]+)(?:From(?P<offset>[0-9]+))?)?$/U' => '__getAllLike',
-
+        '/^count$/U' => '__count',
+        '/^countBy(?P<fields>[A-Z][a-zA-Z0-9]+)?$/U' => '__countBy',
+        '/^countDistinctBy(?P<fields>[A-Z][a-zA-Z0-9]+)?$/U' => '__countDistinctBy',
         '/^removeBy(?P<fields>[A-Z][a-zA-Z0-9]+)$/U' => '__removeBy',
     );
 
@@ -82,7 +85,7 @@ class TableGateway extends Gateway
      * Handler for GetBy magic function
      * @param $matches
      * @param $args
-     * @return array|\Zend\Db\ResultSet\RowObjectInterface
+     * @return array|\Zend\Db\ResultSet\ResultSetInterface
      */
     private function __getBy($matches, $args){
         //select a single row and return it
@@ -122,6 +125,69 @@ class TableGateway extends Gateway
             $entities[] = $entity;
         }
         return $entities;
+    }
+
+    /**
+     * Handler for count magic function
+     * @return int
+     */
+    private function __count()
+    {
+        return $this->_getCount(null, false);
+    }
+
+    /**
+     * Handler for countBy magic function
+     * @param array $matches
+     * @return int
+     */
+    private function __countBy(array $matches)
+    {
+        return $this->_getCount($matches, false);
+    }
+
+    /**
+     * Handler for countDistinctBy magic function
+     * @param array $matches
+     * @return int
+     */
+    private function __countDistinctBy($matches)
+    {
+        return $this->_getCount($matches, true);
+    }
+
+    /**
+     * Count sql rows
+     * @param $matches
+     * @param $distinct
+     * @return int
+     */
+    private function _getCount($matches = null, $distinct = false)
+    {
+        //initialize table gateways of not initialized
+        if (!$this->isInitialized) {
+            $this->initialize();
+        }
+
+        //build count expression
+        $expression = new Expression();
+        $expression->setExpression("COUNT(" . ($distinct ? ' DISTINCT ' : '') . "?)");
+        if (empty($matches)) {
+            $expression->setParameters('*');
+            $expression->setTypes(array(Expression::TYPE_LITERAL));
+        } else {
+            $field = $this->__normalizeKeys($matches['fields']);
+            $expression->setParameters($field);
+            $expression->setTypes(array(Expression::TYPE_IDENTIFIER));
+        }
+
+        $select = $this->sql->select();
+        //set columns to just the count expression
+        $select->columns(array('count' => $expression), false);
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        //execute the statement and return the result
+        $result = $statement->execute()->current();
+        return $result['count'];
     }
 
     /**

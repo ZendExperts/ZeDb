@@ -22,7 +22,7 @@ use ArrayObject;
 class Entity implements EntityInterface, \ArrayAccess, \Countable
 {
     /**
-     * List of propertied for the entity class
+     * List of properties for the entity class
      * @var array
      */
     protected $_data = array();
