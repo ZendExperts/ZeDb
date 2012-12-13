@@ -84,12 +84,14 @@ Currently the fields for each Entity instance are kept in a data array for fast 
 Examples
 --------
 
-1. Get a user entity by id in a controller action:
+ 1. Get a user entity by id in a controller action:
 
-    public function indexAction()
-    {
-        $manager = $this->getServiceLocator()->get('ZeDbManager');
-        $model = $manager->get('Application\Entity\User');
-        $user = $model->getById(1);
-        return array();
-    }
+```
+public function indexAction()
+{
+    $manager = $this->getServiceLocator()->get('ZeDbManager');
+    $model = $manager->get('Application\Entity\User');
+    $user = $model->getById(1);
+    return array();
+}
+```
