@@ -11,33 +11,29 @@ namespace ZeDb\Service;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use ZeDb\DatabaseManager;
-
+use Zend\Db\Adapter\Adapter;
 /**
- * ZeDb Database Manager service factory
- * @package ZeDb
+ *
  * @author Cosmin Harangus <cosmin@zendexperts.com>
  */
-class DatabaseManagerFactory implements FactoryInterface
+class AdapterFactory implements FactoryInterface
 {
 
     /**
-     * Create and return a DatabaseManager instance
+     * Create and return an Adapter instance
      *
      * @param  ServiceLocatorInterface $serviceLocator
-     * @return DatabaseManager
+     * @return Adapter
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $config = $serviceLocator->get('Configuration');
+        $config = $serviceLocator->get('Config');
         $config = isset($config['zendexperts_zedb']) && (is_array($config['zendexperts_zedb']) || $config['zendexperts_zedb'] instanceof ArrayAccess)
             ? $config['zendexperts_zedb']
             : array();
 
-        $dbManager = new DatabaseManager();
-        $dbManager->setServiceLocator($serviceLocator);
-        $dbManager->setConfig($config);
-        return $dbManager;
+        $adapter = new \Zend\Db\Adapter\Adapter($config['adapter']);
+        return $adapter;
     }
 
 }

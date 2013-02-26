@@ -77,12 +77,12 @@ class DatabaseManager implements ServiceLocatorAwareInterface
         //load by entity name from the registered models
         $class = trim($id, '\\');
         if (array_key_exists($class, $this->models) && !$tableName){
-            $model = $this->getServiceLocator()->get('Di')->get($this->models[$class]);
+            $model = $this->getServiceLocator()->get($this->models[$class]);
             return $model;
         }
         //else if tableName is specified load default model with the entityClass and tableName set
         if ($tableName){
-            return $this->getServiceLocator()->get('Di')->get('ZeDb\Model', array(
+            return $this->getServiceLocator()->get('ZeDb\Model', array(
                 'options'=>array(
                     'entityClass'=>$class,
                     'tableName'=>$tableName,
@@ -90,7 +90,7 @@ class DatabaseManager implements ServiceLocatorAwareInterface
             ));
         }
         //else presume the request is a model class and load it from locator
-        return $this->getServiceLocator()->get('Di')->get($class);
+        return $this->getServiceLocator()->get($class);
     }
 
 }
