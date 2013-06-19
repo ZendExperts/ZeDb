@@ -213,8 +213,12 @@ class TableGateway extends Gateway
             if ($order){
                 $select->order($order);
             }
-            $select->limit(($limit === null ? null : 1 * $limit));
-            $select->offset(($offset === null ? null : 1 * $offset));
+            if ($limit !== null) {
+                $select->limit(1 * $limit);
+                if ($offset !== null) {
+                    $select->offset(1 * $offset);
+                }
+            }
         });
         return $resultSet;
     }
